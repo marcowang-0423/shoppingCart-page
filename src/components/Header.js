@@ -1,30 +1,17 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
-import {
-  PAGE_TITLE_SET,
-  PAGE_CONTENT_SET,
-  NAVBAR_ITEM_SET,
-} from "../utils/constants";
+import { setPageContent, setActiveNavItem } from "../actions";
 import { StoreContext } from "../store";
 import NavBar from "./NavBar";
 import products from "../json/products.json";
 import CartSummary from "./CartSummary";
+import { getJSON } from "../api";
 
 export default function Header({ title }) {
   const { dispatch } = useContext(StoreContext);
   const onClickHeader = () => {
-    dispatch({
-      type: PAGE_TITLE_SET,
-      payload: "NORDIC NEST Shopping Cart",
-    });
-    dispatch({
-      type: PAGE_CONTENT_SET,
-      payload: products,
-    });
-    dispatch({
-      type: NAVBAR_ITEM_SET,
-      payload: "",
-    });
+    setPageContent(dispatch, "NORDIC NEST Shopping Cart", getJSON("/"));
+    setActiveNavItem(dispatch, "/");
   };
 
   return (

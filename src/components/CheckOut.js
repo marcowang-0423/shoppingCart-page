@@ -1,10 +1,11 @@
-import { useContext } from "react";
+import { useEffect, useContext } from "react";
 import { StoreContext } from "../store";
 import { CartIcon } from "./Icons";
 import { CART_ADD_ITEM, CART_REMOVE_ITEM } from "../utils/constants";
 import { Select, Button } from "antd";
 import CheckBox from "./CheckBox";
 import { Row, Col } from "antd";
+import { addCartItem, removeCartItem } from "../actions";
 
 const { Option } = Select;
 
@@ -13,23 +14,10 @@ export default function CheckOut() {
     state: { cartItems },
     dispatch,
   } = useContext(StoreContext);
-  const addToCart = (product, qty) => {
-    dispatch({
-      type: CART_ADD_ITEM,
-      payload: {
-        id: product.id,
-        name: product.name,
-        image: product.image,
-        price: product.price,
-        countInStock: product.countInStock,
-        qty,
-      },
-    });
-  };
 
-  const removeFromCart = (productId) => {
-    dispatch({ type: CART_REMOVE_ITEM, payload: productId });
-  };
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const getTotalPrice = () => {
     return cartItems.length > 0
@@ -55,7 +43,7 @@ export default function CheckOut() {
                     <Select
                       defaultValue={item.qty}
                       className="select-style"
-                      onChange={(val) => addToCart(item, val)}
+                      onChange={(qty) => addCartItem(dispatch, item, qty)}
                     >
                       {[...Array(item.countInStock).keys()].map((x) => (
                         <Option key={x + 1} value={x + 1}>
@@ -69,7 +57,7 @@ export default function CheckOut() {
                   <div className="cart-price">${item.price * item.qty}</div>
                   <div
                     className="cart-item-delete"
-                    onClick={() => removeFromCart(item.id)}
+                    onClick={() => removeCartItem(dispatch, item.id)}
                   >
                     x
                   </div>
