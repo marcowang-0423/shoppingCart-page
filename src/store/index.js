@@ -8,6 +8,9 @@ import {
 } from "../utils/constants";
 
 export const StoreContext = createContext();
+let cartItems = localStorage.getItem("cartItems")
+  ? JSON.parse(localStorage.getItem("cartItems"))
+  : [];
 
 const initialState = {
   page: {
@@ -17,10 +20,8 @@ const initialState = {
   navBar: {
     activeItem: "",
   },
-  cartItems: [],
+  cartItems,
 };
-
-let cartItems = {};
 
 function reducer(state, action) {
   switch (action.type) {
